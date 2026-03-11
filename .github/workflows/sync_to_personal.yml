@@ -14,16 +14,16 @@ jobs:
         with:
           fetch-depth: 0
 
-        - name: Push to ArielShadrac Profile
+      - name: Push to ArielShadrac Profile
         run: |
-        git config --global user.name "Ariel Shadrac"
-        git config --global user.email "arielshadrac@gmail.com"
-        
-        # On nettoie au cas où une ancienne config traîne
-        git remote remove mirror || true
-        
-        # L'URL doit être exactement comme ça, sans espace
-        git remote add mirror "https://x-access-token:${{ secrets.SYNC_TOKEN }}@://github.com"
-        
-        # On pousse la branche main
-        git push mirror main --force
+          git config --global user.name "Ariel Shadrac"
+          git config --global user.email "arielshadrac@gmail.com"
+          
+          # On nettoie l'ancienne config si elle existe
+          git remote remove mirror || true
+          
+          # L'URL corrigée avec ton pseudo et ton repo
+          git remote add mirror "https://x-access-token:${{ secrets.SYNC_TOKEN }}@://github.com"
+          
+          # On pousse vers ton compte perso
+          git push mirror main --force
