@@ -14,15 +14,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push to ArielShadrac Profile
+        - name: Push to ArielShadrac Profile
         run: |
-          # Configuration de l'identité git
-          git config --global user.name "Ariel Shadrac"
-          git config --global user.email "arielshadrac@gmail.com"
-          
-          # Ajout du dépôt personnel comme remote "mirror"
-          # Utilisation du secret pour l'authentification
-          git remote add mirror https://${{ secrets.SYNC_TOKEN }}@://github.com
-          
-          # Force le push vers le compte perso pour que les deux soient identiques
-          git push mirror main --force
+        git config --global user.name "Ariel Shadrac"
+        git config --global user.email "ton-email@exemple.com"
+        
+        # On nettoie au cas où une ancienne config traîne
+        git remote remove mirror || true
+        
+        # L'URL doit être exactement comme ça, sans espace
+        git remote add mirror "https://x-access-token:${{ secrets.SYNC_TOKEN }}@://github.com"
+        
+        # On pousse la branche main
+        git push mirror main --force
