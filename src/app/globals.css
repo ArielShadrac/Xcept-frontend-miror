@@ -1,26 +1,258 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* ══════════════════════════════════════ TOKENS — DARK ══════════════════════════════════════ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #080808;
+  --bg-2: #0e0e0e;
+  --bg-3: #141414;
+  --fg: #f5f5f3;
+  --fg-2: rgba(245,245,243,0.55);
+  --fg-3: rgba(245,245,243,0.28);
+  --fg-4: rgba(245,245,243,0.10);
+  --border: rgba(255,255,255,0.07);
+  --border-2: rgba(255,255,255,0.12);
+  --border-3: rgba(255,255,255,0.20);
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-bg-2: rgba(255,255,255,0.07);
+  --glass-bg-3: rgba(255,255,255,0.11);
+  --shadow-glass: 0 4px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.07) inset;
+  --shadow-glass-lg: 0 12px 48px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.09) inset;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --ecg-stroke: rgba(245,245,243,0.45);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ══════════════════════════════════════ TOKENS — LIGHT (adouci + Apple-like) ══════════════════════════════════════ */
+[data-theme="light"] {
+  --bg: #f5f5f7;              /* fond principal Apple classique, très doux */
+  --bg-2: #ffffff;            /* surfaces élevées (cartes) plus claires et propres */
+  --bg-3: #f8f8fa;            /* niveau intermédiaire ultra doux */
+  --fg: #1c1c1e;              /* texte principal Apple (moins noir que #0c0c0a → plus doux et moins "brute") */
+  --fg-2: rgba(28,28,30,0.68); /* secondaire beaucoup plus lisible */
+  --fg-3: rgba(28,28,30,0.48); /* labels et petits textes bien visibles */
+  --fg-4: rgba(28,28,30,0.22);
+  --border: rgba(0,0,0,0.06);
+  --border-2: rgba(0,0,0,0.09);
+  --border-3: rgba(0,0,0,0.14);
+  --glass-bg: rgba(255,255,255,0.72);   /* verre plus blanc et doux en light */
+  --glass-bg-2: rgba(255,255,255,0.82);
+  --glass-bg-3: rgba(255,255,255,0.90);
+  --shadow-glass: 0 4px 16px -2px rgba(0,0,0,0.07), 0 1px 0 rgba(255,255,255,0.92) inset;
+  --shadow-glass-lg: 0 10px 32px -4px rgba(0,0,0,0.09), 0 1px 0 rgba(255,255,255,0.85) inset;
+  --ecg-stroke: rgba(28,28,30,0.42);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ══════════════════════════════════════ BASE ══════════════════════════════════════ */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Grain overlay — réduit en light pour un rendu Apple ultra-clean */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 180px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+[data-theme="light"] body::before {
+  opacity: 0.22; /* beaucoup plus doux et lisible en light */
+}
+
+/* ══════════════════════════════════════ SECTION TAG ══════════════════════════════════════ */
+.sec-tag {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 60px;
+}
+
+.sec-tag::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--fg-3);
+}
+
+/* ══════════════════════════════════════ REVEAL ══════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+
+.reveal.on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════ MARQUEE ══════════════════════════════════════ */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 36s linear infinite;
+}
+
+/* ══════════════════════════════════════ SCANLINE ══════════════════════════════════════ */
+@keyframes scanline {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.animate-scanline {
+  animation: scanline 2.5s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════ PULSE DOT ══════════════════════════════════════ */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+.animate-pulse-dot {
+  animation: pulseDot 2s infinite;
+}
+
+/* ══════════════════════════════════════ HERO ANIMATIONS ══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ══════════════════════════════════════ LOADER ANIMATIONS ══════════════════════════════════════ */
+@keyframes drawCross {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes spinRing {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeUpLoader {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes progressFill {
+  0% { width: 0%; }
+  60% { width: 72%; }
+  100% { width: 100%; }
+}
+
+@keyframes drawECG {
+  to { stroke-dashoffset: 0; }
+}
+
+.loader-cross-svg {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: drawCross 1.1s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
+}
+
+.loader-ring {
+  animation: spinRing 1.2s linear 0.4s infinite, loaderFadeIn 0.3s 0.4s forwards;
+  opacity: 0;
+}
+
+.loader-wordmark {
+  opacity: 0;
+  animation: fadeUpLoader 0.6s cubic-bezier(0.22,1,0.36,1) 0.8s forwards;
+}
+
+.loader-tagline {
+  opacity: 0;
+  animation: fadeUpLoader 0.5s cubic-bezier(0.22,1,0.36,1) 1.0s forwards;
+}
+
+.loader-progress-wrap {
+  opacity: 0;
+  animation: loaderFadeIn 0.4s 1.1s forwards;
+}
+
+.loader-progress-bar {
+  width: 0%;
+  animation: progressFill 1.4s cubic-bezier(0.22,1,0.36,1) 1.1s forwards;
+}
+
+.loader-ecg-wrap {
+  opacity: 0;
+  animation: loaderFadeIn 0.5s 1.2s forwards;
+}
+
+.loader-ecg-path {
+  stroke-dasharray: 700;
+  stroke-dashoffset: 700;
+  animation: drawECG 1.8s cubic-bezier(0.22,1,0.36,1) 1.3s forwards;
+}
+
+@keyframes loaderFadeIn {
+  to { opacity: 1; }
+}
+
+/* ══════════════════════════════════════ SOL CARD hover line ══════════════════════════════════════ */
+.sol-card-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--fg-4);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+
+.sol-card-hover:hover::before {
+  transform: scaleX(1);
+  background: var(--fg-3);
+}
+
+/* ══════════════════════════════════════ PCARD active bar ══════════════════════════════════════ */
+.pcard-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+
+.pcard-bar.is-active::before {
+  transform: scaleX(1);
 }
