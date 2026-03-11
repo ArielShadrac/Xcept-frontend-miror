@@ -14,24 +14,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create repository on personal account if not exists
-        run: |
-          # Vérifier si le dépôt existe, sinon le créer via l'API GitHub
-          REPO_NAME="Xcept-frontend"
-          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.SYNC_TOKEN }}" \
-            "https://api.github.com/repos/ArielShadrac/$REPO_NAME")
-          
-          if [ "$RESPONSE_CODE" = "404" ]; then
-            echo " Repository does not exist. Creating it..."
-            curl -X POST -H "Authorization: token ${{ secrets.SYNC_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/user/repos \
-              -d "{\"name\":\"$REPO_NAME\", \"private\":false}"
-            echo "Repository created successfully"
-          else
-            echo "Repository already exists"
-          fi
-
       - name: Push to ArielShadrac Profile
         run: |
           git config --global user.name "Ariel Shadrac"
@@ -40,11 +22,13 @@ jobs:
           # Remove existing mirror remote if it exists
           git remote remove mirror || true
           
-          # Add correct remote URL
-          git remote add mirror "https://x-access-token:${{ secrets.SYNC_TOKEN }}@github.com/ArielShadrac/Xcept-frontend.git"
+          # Add remote with token authentication
+          git remote add mirror "https://ArielShadrac:${{ secrets.SYNC_TOKEN }}@github.com/ArielShadrac/Xcept-frontend.git"
           
-          # Force push the main branch to the mirror remote
+          # Force push the main branch
           git push mirror main --force
           
       - name: Sync complete
-        run: echo "Successfully synced to personal repository"
+        run: |
+          echo "Successfully synced to personal repository"
+          echo "https://github.com/ArielShadrac/Xcept-frontend"
