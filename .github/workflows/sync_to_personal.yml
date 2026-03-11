@@ -1,0 +1,28 @@
+name: Sync to ArielShadrac Personal Repo
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  mirror_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to ArielShadrac Profile
+        run: |
+          # Configuration de l'identité git
+          git config --global user.name "Ariel Shadrac"
+          git config --global user.email "arielshadrac@gmail.com"
+          
+          # Ajout du dépôt personnel comme remote "mirror"
+          # Utilisation du secret pour l'authentification
+          git remote add mirror https://${{ secrets.SYNC_TOKEN }}@://github.com
+          
+          # Force le push vers le compte perso pour que les deux soient identiques
+          git push mirror main --force
