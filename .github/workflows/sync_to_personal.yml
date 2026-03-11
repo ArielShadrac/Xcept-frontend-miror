@@ -19,11 +19,11 @@ jobs:
           git config --global user.name "Ariel Shadrac"
           git config --global user.email "arielshadrac@gmail.com"
           
-          # On nettoie l'ancienne config si elle existe
+          # On nettoie l'ancienne config pour éviter l'erreur "remote mirror already exists"
           git remote remove mirror || true
           
-          # L'URL corrigée avec ton pseudo et ton repo
+          # L'URL sans le "://" en trop qui faisait tout planter
           git remote add mirror "https://x-access-token:${{ secrets.SYNC_TOKEN }}@://github.com"
           
-          # On pousse vers ton compte perso
+          # On pousse de l'organisation vers ton compte perso
           git push mirror main --force
