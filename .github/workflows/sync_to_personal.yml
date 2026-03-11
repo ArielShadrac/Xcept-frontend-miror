@@ -19,11 +19,14 @@ jobs:
           git config --global user.name "Ariel Shadrac"
           git config --global user.email "arielshadrac@gmail.com"
           
-          # On nettoie l'ancienne config pour éviter l'erreur "remote mirror already exists"
+          # Remove existing mirror remote if it exists (to avoid conflicts)
           git remote remove mirror || true
           
-          # L'URL sans le "://" en trop qui faisait tout planter
-          git remote add mirror "https://x-access-token:${{ secrets.SYNC_TOKEN }}@://github.com"
+          # Add correct remote URL using the secret token
+          git remote add mirror "https://x-access-token:${{ secrets.SYNC_TOKEN }}@github.com/ArielShadrac/Xcept-frontend.git"
           
-          # On pousse de l'organisation vers ton compte perso
+          # Force push the main branch to the mirror remote
           git push mirror main --force
+          
+      - name: Sync complete
+        run: echo " Successfully synced to personal repository"
