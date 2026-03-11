@@ -17,7 +17,7 @@ jobs:
         - name: Push to ArielShadrac Profile
         run: |
         git config --global user.name "Ariel Shadrac"
-        git config --global user.email "ton-email@exemple.com"
+        git config --global user.email "arielshadrac@gmail.com"
         
         # On nettoie au cas où une ancienne config traîne
         git remote remove mirror || true
