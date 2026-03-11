@@ -149,8 +149,18 @@ export function Partners() {
         </div>
 
         {/* Logo strip */}
-        <div ref={logoRef} className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 1, background: 'var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}
-          className="max-[900px]:!grid-cols-3 max-[620px]:!grid-cols-2">
+        <div 
+            ref={logoRef} 
+            className="reveal max-[900px]:!grid-cols-3 max-[620px]:!grid-cols-2" 
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(6, 1fr)', 
+              gap: 1, 
+              background: 'var(--border)', 
+              borderRadius: 'var(--radius-md)', 
+              overflow: 'hidden' 
+            }}
+          >
           {partners.map((p) => (
             <div key={p.name} style={{ background: 'var(--bg-2)', padding: '18px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
               className="hover:!bg-[var(--glass-bg-2)]">
