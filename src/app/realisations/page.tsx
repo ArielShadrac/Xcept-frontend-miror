@@ -107,10 +107,10 @@ export default function RealisationsPage() {
         }} />
         <div className="max-w-[1280px] mx-auto px-12 max-[900px]:px-5" style={{ position: 'relative', zIndex: 1 }}>
           <div className="sec-tag">Réalisations</div>
-          <div ref={heroRef} className="reveal"
-            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end' }}
-            className="reveal max-[900px]:!grid-cols-1 max-[900px]:!gap-8"
-          >
+          <div ref={heroRef} 
+              className="reveal max-[900px]:!grid-cols-1 max-[900px]:!gap-8"
+              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'end' }}
+            >
             <h1 style={{ fontSize: 'clamp(40px, 5.5vw, 72px)', fontWeight: 800, letterSpacing: '-0.05em', lineHeight: 0.95 }}>
               Ce qu'on a vraiment<br />
               <em style={{ fontStyle: 'italic', fontWeight: 300, color: 'var(--fg-2)' }}>construit et déployé.</em>
