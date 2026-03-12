@@ -10,9 +10,9 @@ const PROCESS = [
 ]
 
 const ENGAGEMENTS = [
-  { label: 'Souveraineté des données', desc: 'Déploiement on-premise possible. Vos données médicales ne quittent jamais votre infrastructure.' },
+  { label: 'Souveraineté des données', desc: 'Déploiement on-premise possible. Vos données médicales ne quittent jamais votre infrastructure sans votre accord.' },
   { label: 'Transfert de compétences', desc: 'Chaque mission inclut formation et documentation pour rendre vos équipes autonomes.' },
-  { label: 'Tarification adaptée', desc: 'Modèles tarifaires spécifiques pour les institutions publiques et ONG en Afrique.' },
+  { label: 'Tarification adaptée', desc: 'Modèles tarifaires spécifiques pour les institutions publiques, privées et ONG en Afrique.' },
 ]
 
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {

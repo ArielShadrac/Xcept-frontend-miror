@@ -2,6 +2,9 @@
 
 import { useScrollReveal } from '@/hooks/useScrollReveal'
 import { useState } from 'react'
+import { api } from '@/lib/api'
+
+type FormState = 'idle' | 'loading' | 'success' | 'error'
 
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useScrollReveal()
@@ -19,15 +22,26 @@ export default function ContactPage() {
     subject: 'general',
     message: '',
   })
+  const [state, setState]       = useState<FormState>('idle')
+  const [feedback, setFeedback] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Ici tu peux connecter un service comme Formspree, EmailJS, ou une API
-    alert('Formulaire envoyé (démo)')
+    setState('loading')
+    setFeedback('')
+    try {
+      const res = await api.sendContact(formData)
+      setFeedback(res.detail)
+      setState('success')
+      setFormData({ name: '', email: '', subject: 'general', message: '' })
+    } catch (err: any) {
+      setFeedback(err.message ?? 'Une erreur est survenue. Veuillez réessayer.')
+      setState('error')
+    }
   }
 
   return (
@@ -82,6 +96,16 @@ export default function ContactPage() {
                 Envoyez-nous un message
               </h2>
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                {state === 'success' && (
+                  <div style={{ padding: '14px 18px', background: 'var(--glass-bg-2)', border: '1px solid var(--border-3)', borderRadius: 10, fontSize: 14, color: 'var(--fg-2)', lineHeight: 1.6 }}>
+                    {feedback}
+                  </div>
+                )}
+                {state === 'error' && (
+                  <div style={{ padding: '14px 18px', background: 'rgba(255,80,80,0.07)', border: '1px solid rgba(255,80,80,0.25)', borderRadius: 10, fontSize: 14, color: 'var(--fg-2)', lineHeight: 1.6 }}>
+                    {feedback}
+                  </div>
+                )}
                 <div>
                   <label htmlFor="name" style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6, color: 'var(--fg-2)' }}>
                     Nom complet *
@@ -168,13 +192,16 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
+                  disabled={state === 'loading'}
                   style={{
                     padding: '14px 24px', background: 'var(--fg)', color: 'var(--bg)',
                     border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600,
-                    cursor: 'pointer', transition: 'opacity 0.2s', width: 'fit-content',
+                    cursor: state === 'loading' ? 'wait' : 'pointer',
+                    opacity: state === 'loading' ? 0.6 : 1,
+                    transition: 'opacity 0.2s', width: 'fit-content',
                   }}
                 >
-                  Envoyer le message
+                  {state === 'loading' ? 'Envoi en cours...' : 'Envoyer le message'}
                 </button>
               </form>
             </div>

@@ -254,36 +254,22 @@ export const navItems = [
   {
     label: 'Solutions',
     href: '/solutions',
-    children: [
-      { label: 'Imagerie Médicale', href: '/solutions#imagerie', icon: `<path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>` },
-      { label: 'Robotique',         href: '/solutions#robotique', icon: `<circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83"/>` },
-      { label: 'Télémédecine',      href: '/solutions#telemedecine', icon: `<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>` },
-    ],
   },
   {
     label: 'Services',
     href: '/services',
-    children: [
-      { label: 'Développement médical', href: '/services#dev',        icon: `<path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>` },
-      { label: 'Clinical AI',           href: '/services#ai',         icon: `<circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>` },
-      { label: 'Consulting santé',      href: '/services#consulting', icon: `<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>` },
-      { label: 'Recherche & Formation', href: '/services#recherche',  icon: `<path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>` },
-    ],
   },
   {
     label: 'Réalisations',
     href: '/realisations',
     children: [
       { label: 'Projets déployés', href: '/realisations#projets',          icon: `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>` },
-      { label: 'Témoignages',      href: '/realisations#testimonials',  icon: `<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>` },
+      { label: 'Témoignages',      href: '/temoignages',  icon: `<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>` },
     ],
   },
   {
-    label: 'Partenaires',
-    href: '/partners',
-    children: [
-      { label: 'Nos partenaires', href: '/partners#partners',  icon: `<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>` },
-      { label: 'Communauté',      href: '/partners#community', icon: `<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>` },
-    ],
+    label: 'Blog',
+    href: '/blog',
+
   },
 ]

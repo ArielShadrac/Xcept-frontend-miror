@@ -1,65 +1,161 @@
-'use client'
+import type { Metadata } from 'next'
+import { api, type APITeamMember } from '@/lib/api'
 
-import { useScrollReveal } from '@/hooks/useScrollReveal'
-import Image from 'next/image'
-
-// Données de l’équipe avec photos (à remplacer par les vrais chemins)
-const TEAM = [
-  {
-    name: 'Ariel Shadrac Ouédraogo',
-    role: 'Fondateur & CEO',
-    bio: 'Ingénieur en IA et entrepreneur social. Ancien chercheur en vision par ordinateur appliquée à la santé. Convaincu que la technologie peut rendre les soins accessibles partout.',
-    linkedin: 'https://www.linkedin.com/in/ariel-shadrac-ouedraogo',
-    photo: '/team/ariel.jpg', // À placer dans public/team/
-  },
-  {
-    name: 'Claire Mballa',
-    role: 'Directrice médicale',
-    bio: 'Médecin urgentiste, ex-CHU Yaoundé. Elle assure la validation clinique de nos outils et forme les équipes terrain.',
-    linkedin: '#',
-    photo: null, // Pas de photo → fallback sur initiales
-  },
-  {
-    name: 'Thierno Diallo',
-    role: 'Lead développeur',
-    bio: 'Expert en systèmes embarqués et optimisation de modèles pour environnements contraints. A contribué à des projets open source majeurs.',
-    linkedin: '#',
-    photo: null,
-  },
-  {
-    name: 'Aïssatou Ndiaye',
-    role: 'Responsable partenariats',
-    bio: 'Spécialiste en santé publique, elle coordonne les relations avec les ministères, ONG et institutions académiques en Afrique de l’Ouest.',
-    linkedin: '#',
-    photo: null,
-  },
-]
-
-function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useScrollReveal()
-  return <div ref={ref} className="reveal" style={{ transitionDelay: `${delay}ms` }}>{children}</div>
+export const metadata: Metadata = {
+  title: 'Équipe — Xcept-Health',
+  description: "Les cliniciens, ingénieurs et chercheurs qui construisent l'IA médicale open source pour l'Afrique.",
 }
 
-export default function TeamPage() {
-  const heroRef = useScrollReveal()
-  const gridRef = useScrollReveal()
+function MemberCard({ member }: { member: APITeamMember }) {
+  const hasLinkedin = Boolean(member.linkedin && member.linkedin !== '#')
+  const hasGithub   = Boolean(member.github   && member.github   !== '#')
 
-  // Fonction pour obtenir les initiales
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2)
+  return (
+    <div style={{
+      background: 'var(--bg-2)',
+      border: '1px solid var(--border)',
+      borderRadius: 'var(--radius-md)',
+      overflow: 'hidden',
+      transition: 'border-color 0.25s, transform 0.25s',
+      display: 'flex',
+      flexDirection: 'column',
+    }} className="hover:!border-[var(--border-3)] hover:!-translate-y-1">
+
+      {/* Photo / initiales */}
+      <div style={{
+        height: 220,
+        background: 'var(--bg)',
+        borderBottom: '1px solid var(--border)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Accent line top */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0,
+          height: 3,
+          background: 'linear-gradient(90deg, var(--fg) 0%, transparent 100%)',
+          opacity: 0.15,
+        }} />
+
+        {member.photo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={member.photo_url}
+            alt={member.name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+          />
+        ) : (
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
+          }}>
+            <div style={{
+              width: 72, height: 72, borderRadius: '50%',
+              background: 'var(--glass-bg-2)',
+              border: '1px solid var(--border-2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: 'var(--font-geist-mono), monospace',
+              fontSize: 22, fontWeight: 700, color: 'var(--fg-3)',
+            }}>
+              {member.initials}
+            </div>
+            <span style={{
+              fontFamily: 'var(--font-geist-mono), monospace',
+              fontSize: 10, color: 'var(--fg-4)', letterSpacing: '0.08em',
+            }}>
+              photo à venir
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Infos */}
+      <div style={{ padding: '24px 28px 28px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+        {/* Rôle */}
+        <span style={{
+          fontFamily: 'var(--font-geist-mono), monospace',
+          fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase',
+          color: 'var(--fg-3)', marginBottom: 10, display: 'block',
+        }}>
+          {member.role}
+        </span>
+
+        {/* Nom */}
+        <h3 style={{
+          fontSize: 18, fontWeight: 700,
+          letterSpacing: '-0.03em', lineHeight: 1.2,
+          marginBottom: 12, color: 'var(--fg)',
+        }}>
+          {member.name}
+        </h3>
+
+        {/* Bio */}
+        <p style={{
+          fontSize: 13, lineHeight: 1.8, color: 'var(--fg-2)',
+          flex: 1, marginBottom: 24,
+        }}>
+          {member.bio}
+        </p>
+
+        {/* Liens */}
+        {(hasLinkedin || hasGithub) && (
+          <div style={{
+            display: 'flex', gap: 8,
+            paddingTop: 20, borderTop: '1px solid var(--border)',
+          }}>
+            {hasLinkedin && (
+              <a href={member.linkedin} target="_blank" rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  fontSize: 12, color: 'var(--fg-3)', textDecoration: 'none',
+                  fontFamily: 'var(--font-geist-mono), monospace',
+                  transition: 'color 0.2s',
+                }} className="hover:!text-[var(--fg)]">
+                <svg viewBox="0 0 24 24" width={13} height={13} stroke="currentColor" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+                LinkedIn
+              </a>
+            )}
+            {hasGithub && (
+              <a href={member.github} target="_blank" rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  fontSize: 12, color: 'var(--fg-3)', textDecoration: 'none',
+                  fontFamily: 'var(--font-geist-mono), monospace',
+                  transition: 'color 0.2s',
+                }} className="hover:!text-[var(--fg)]">
+                <svg viewBox="0 0 24 24" width={13} height={13} stroke="currentColor" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
+                </svg>
+                GitHub
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default async function TeamPage() {
+  let team: APITeamMember[] = []
+  try {
+    team = await api.getTeam()
+  } catch {
+    // silencieux
   }
 
   return (
     <main style={{ position: 'relative', zIndex: 1 }}>
 
-      {/* Hero */}
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section style={{
-        padding: '160px 0 100px', borderBottom: '1px solid var(--border)',
+        padding: '160px 0 100px',
+        borderBottom: '1px solid var(--border)',
         position: 'relative', overflow: 'hidden',
       }}>
         <div style={{
@@ -69,225 +165,78 @@ export default function TeamPage() {
           maskImage: 'radial-gradient(ellipse 80% 70% at 50% 0%, black 0%, transparent 100%)',
           pointerEvents: 'none',
         }} />
-        <div style={{
-          position: 'absolute', top: '-10%', left: '50%', transform: 'translateX(-50%)',
-          width: 900, height: 600,
-          background: 'radial-gradient(ellipse at center, color-mix(in srgb, var(--fg) 5%, transparent) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
 
-        <div className="max-w-[1280px] mx-auto px-12 max-[900px]:px-5" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="max-w-[1280px] mx-auto px-12 max-[900px]:px-5"
+          style={{ position: 'relative', zIndex: 1 }}>
           <div className="sec-tag">Notre équipe</div>
-          <div ref={heroRef} className="reveal" style={{ maxWidth: 720 }}>
+          <div className="reveal" style={{ maxWidth: 680 }}>
             <h1 style={{
-              fontSize: 'clamp(44px, 6vw, 84px)', fontWeight: 800,
+              fontSize: 'clamp(44px, 6vw, 80px)', fontWeight: 800,
               letterSpacing: '-0.05em', lineHeight: 0.95, marginBottom: 24,
             }}>
-              Les personnes derrière<br />
-              <em style={{ fontStyle: 'italic', fontWeight: 300, color: 'var(--fg-2)' }}>l’exception.</em>
+              Les personnes<br />
+              <em style={{ fontStyle: 'italic', fontWeight: 300, color: 'var(--fg-2)' }}>
+                derrière l&apos;exception.
+              </em>
             </h1>
-            <p style={{ fontSize: 16, lineHeight: 1.78, color: 'var(--fg-2)', maxWidth: 560 }}>
-              Une équipe internationale de cliniciens, ingénieurs et chercheurs unie par la même conviction : l’accès aux soins ne doit plus être un privilège.
+            <p style={{ fontSize: 15, lineHeight: 1.78, color: 'var(--fg-2)', maxWidth: 520 }}>
+              Cliniciens, ingénieurs, chercheurs — unis par la conviction que l&apos;accès aux soins ne doit plus être un privilège.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Grille de l’équipe */}
+      {/* ── GRILLE ───────────────────────────────────────────────────────── */}
       <section style={{ padding: '112px 0', borderBottom: '1px solid var(--border)' }}>
         <div className="max-w-[1280px] mx-auto px-12 max-[900px]:px-5">
-          <div ref={gridRef} className="reveal" style={{ marginBottom: 56 }}>
-            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 46px)', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1.1 }}>
-              Rencontrez l’équipe
-            </h2>
-          </div>
 
-          <div style={{
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-  gap: 64, // Espace généreux pour éviter l'effet "collé"
-  padding: '40px 0',
-}}>
-  {TEAM.map((member, idx) => (
-    <RevealSection key={member.name} delay={idx * 80}>
-      <div 
-        style={{
-          position: 'relative',
-          height: '100%',
-          // On décale les cartes impaires pour créer un effet de vague innovant
-          marginTop: idx % 2 !== 0 ? 40 : 0,
-        }}
-        className="group"
-      >
-        {/* L'ombre portée diffuse (Glow) qui suit la couleur de la bordure */}
-        <div className="absolute -inset-2 bg-[var(--border-2)] opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500" />
-
-        <div style={{
-          background: 'var(--glass-bg)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid var(--border-2)',
-          borderRadius: 32,
-          padding: '40px 32px 32px 32px',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
-        }} className="hover:!border-[var(--border-3)] hover:!shadow-2xl">
-          
-          {/* Section Photo Innovante : Masque Organique */}
-          <div style={{
-            position: 'relative',
-            width: '100px',
-            height: '100px',
-            marginBottom: 32,
-          }}>
-            <div style={{
-              position: 'absolute',
-              inset: -8,
-              border: '1px solid var(--border-2)',
-              borderRadius: '24px',
-              transform: 'rotate(-10deg)',
-            }} className="group-hover:rotate-0 transition-transform duration-500" />
-            
-            <div style={{
-              width: '100%',
-              height: '100%',
-              borderRadius: '20px',
-              overflow: 'hidden',
-              background: 'var(--bg)',
-              border: '1px solid var(--border-3)',
-              position: 'relative',
-              zIndex: 2,
-            }}>
-              {member.photo ? (
-                <img 
-                  src={member.photo} 
-                  alt={member.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <div style={{
-                  width: '100%', height: '100%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'var(--font-geist-mono)',
-                  fontSize: 24, fontWeight: 700, color: 'var(--fg-3)',
-                }}>
-                  {member.name[0]}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Badge de rôle - Style Pill Tech */}
-          <div style={{
-            alignSelf: 'flex-start',
-            padding: '4px 12px',
-            borderRadius: '100px',
-            background: 'var(--bg)',
-            border: '1px solid var(--border-2)',
-            fontSize: 10,
-            fontFamily: 'var(--font-geist-mono)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            color: 'var(--fg-3)',
-            marginBottom: 16,
-          }}>
-            {member.role}
-          </div>
-
-          <h3 style={{ 
-            fontSize: 24, 
-            fontWeight: 700, 
-            letterSpacing: '-0.04em', 
-            marginBottom: 12,
-            color: 'var(--fg-1)'
-          }}>
-            {member.name}
-          </h3>
-
-          <p style={{ 
-            fontSize: 14, 
-            lineHeight: 1.8, 
-            color: 'var(--fg-2)', 
-            marginBottom: 32, 
-            flex: 1,
-            fontWeight: 400
-          }}>
-            {member.bio}
-          </p>
-
-          {/* Social Link - Version Ultra Épurée */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingTop: 24,
-            borderTop: '1px solid var(--border-2)',
-          }}>
-            <span style={{ fontSize: 12, color: 'var(--fg-3)', fontWeight: 500 }}>Connect</span>
-            {member.linkedin && member.linkedin !== '#' && (
-              <a href={member.linkedin} target="_blank" rel="noopener noreferrer"
-                style={{
-                  width: 32, height: 32,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  borderRadius: '50%',
-                  background: 'var(--bg)',
-                  border: '1px solid var(--border-2)',
-                  transition: 'all 0.3s ease'
-                }}
-                className="hover:!scale-110 hover:!border-[var(--fg-1)]"
-              >
-                <svg viewBox="0 0 24 24" width={14} height={14} stroke="var(--fg-1)" fill="none" strokeWidth={2}>
-                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
-                  <circle cx="4" cy="4" r="2"/>
-                </svg>
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-    </RevealSection>
-  ))}
-</div>
-        </div>
-      </section>
-
-      {/* CTA Rejoignez-nous */}
-      <section style={{ padding: '112px 0' }}>
-        <div className="max-w-[1280px] mx-auto px-12 max-[900px]:px-5">
-          <div style={{
-            background: 'var(--glass-bg)',
-            backdropFilter: 'saturate(180%) blur(24px)',
-            WebkitBackdropFilter: 'saturate(180%) blur(24px)',
-            border: '1px solid var(--border-2)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '72px 64px',
-            textAlign: 'center',
-            boxShadow: 'var(--shadow-glass)',
-          }}>
-            <h2 style={{ fontSize: 'clamp(24px, 3.5vw, 44px)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: 16 }}>
-              Vous voulez nous rejoindre ?
-            </h2>
-            <p style={{ fontSize: 15, color: 'var(--fg-2)', maxWidth: 480, margin: '0 auto 32px', lineHeight: 1.72 }}>
-              Nous recrutons des talents passionnés par l’IA médicale, la robotique et l’impact social. Écrivez-nous !
-            </p>
-            <a href="mailto:arielshadrac@gmail.com"
-              style={{
-                padding: '14px 32px',
-                borderRadius: 10,
-                background: 'var(--fg)',
-                color: 'var(--bg)',
-                fontSize: 14,
-                fontWeight: 600,
-                textDecoration: 'none',
-                display: 'inline-block',
+          {team.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '80px 0' }}>
+              <div style={{
+                fontFamily: 'var(--font-geist-mono), monospace',
+                fontSize: 13, color: 'var(--fg-3)',
               }}>
-              Postuler spontanément
-            </a>
-          </div>
+                L&apos;équipe arrive bientôt.
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="reveal" style={{ marginBottom: 56, display: 'flex', alignItems: 'baseline', gap: 16 }}>
+                <h2 style={{
+                  fontSize: 'clamp(24px, 3vw, 40px)', fontWeight: 700,
+                  letterSpacing: '-0.04em',
+                }}>
+                  Rencontrez l&apos;équipe dirigeante
+                </h2>
+                <span style={{
+                  fontFamily: 'var(--font-geist-mono), monospace',
+                  fontSize: 11, color: 'var(--fg-3)', letterSpacing: '0.06em',
+                }}>
+                  {team.length} membres
+                </span>
+              </div>
+
+              <div
+                className="max-[700px]:!grid-cols-2 max-[480px]:!grid-cols-1"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 20,
+                }}
+              >
+                {team.map((member, i) => (
+                  <div key={member.id} className="reveal" style={{ transitionDelay: `${i * 60}ms` }}>
+                    <MemberCard member={member} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
+
+
+
     </main>
   )
 }
