@@ -52,22 +52,20 @@ export function Footer() {
           <FooterCol title="Produit" links={[
             { label: 'Solutions',       href: '/solutions' },
             { label: 'Réalisations',    href: '/realisations' },
-            { label: 'Roadmap',         href: '/roadmap' },    // interne
             { label: 'Changelog',       href: '/changelog' },  // interne
           ]} />
 
           <FooterCol title="Ressources" links={[
             { label: 'Documentation', href: '/docs' },
             { label: 'GitHub',        href: 'https://github.com/Xcept-Health', external: true },
-            { label: 'Guides cliniques', href: '/guides' },
             { label: 'Blog',          href: '/blog' },
           ]} />
 
           <FooterCol title="Organisation" links={[
             { label: 'Mission',        href: '/mission' },
+            { label: 'Equipe',         href: '/team' },
             { label: 'Communauté',     href: '/community' },  
             { label: 'Contact',        href: '/contact' },
-            { label: 'Confidentialité', href: '/privacy' },
           ]} />
         </div>
 
