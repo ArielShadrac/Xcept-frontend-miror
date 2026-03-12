@@ -27,21 +27,21 @@ export function Footer() {
               IA médicale open source pour démocratiser les soins dans les environnements à faibles ressources.
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
-              {/* GitHub */}
+              {/* GitHub (externe) */}
               <a href="https://github.com/Xcept-Health" target="_blank" rel="noopener noreferrer" style={socStyle}>
                 <svg viewBox="0 0 24 24" width={14} height={14} stroke="var(--fg-3)" fill="none" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
                 </svg>
               </a>
-              {/* LinkedIn */}
+              {/* LinkedIn (externe) */}
               <a href="https://www.linkedin.com/company/xcept-health" target="_blank" rel="noopener noreferrer" style={socStyle}>
                 <svg viewBox="0 0 24 24" width={14} height={14} stroke="var(--fg-3)" fill="none" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
                   <circle cx="4" cy="4" r="2"/>
                 </svg>
               </a>
-              {/* Discord */}
-              <a href="#" style={socStyle}>
+              {/* Discord (externe – à remplacer par le vrai lien si existant) */}
+              <a href="https://discord.gg/xcept-health" target="_blank" rel="noopener noreferrer" style={socStyle}>
                 <svg viewBox="0 0 24 24" width={14} height={14} stroke="var(--fg-3)" fill="none" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
                 </svg>
@@ -50,27 +50,24 @@ export function Footer() {
           </div>
 
           <FooterCol title="Produit" links={[
-            { label: 'Solutions',       href: '#solutions' },
-            { label: 'Fonctionnalités', href: '#features' },
-            { label: 'Réalisations',    href: '#real' },
-            { label: 'Roadmap',         href: '#' },
-            { label: 'Changelog',       href: '#' },
+            { label: 'Solutions',       href: '/solutions' },
+            { label: 'Réalisations',    href: '/realisations' },
+            { label: 'Roadmap',         href: '/roadmap' },    // interne
+            { label: 'Changelog',       href: '/changelog' },  // interne
           ]} />
 
           <FooterCol title="Ressources" links={[
-            { label: 'Documentation', href: '#' },
+            { label: 'Documentation', href: '/docs' },
             { label: 'GitHub',        href: 'https://github.com/Xcept-Health', external: true },
-            { label: 'API Reference', href: '#' },
-            { label: 'Guides cliniques', href: '#' },
-            { label: 'Blog',          href: '#' },
+            { label: 'Guides cliniques', href: '/guides' },
+            { label: 'Blog',          href: '/blog' },
           ]} />
 
           <FooterCol title="Organisation" links={[
-            { label: 'Mission',        href: '#mission' },
-            { label: 'Partenaires',    href: '#partners' },
-            { label: 'Communauté',     href: '#community' },
-            { label: 'Contact',        href: '#' },
-            { label: 'Confidentialité', href: '#' },
+            { label: 'Mission',        href: '/mission' },
+            { label: 'Communauté',     href: '/community' },  
+            { label: 'Contact',        href: '/contact' },
+            { label: 'Confidentialité', href: '/privacy' },
           ]} />
         </div>
 
@@ -127,7 +124,7 @@ function FooterCol({
             {l.external ? (
               <a href={l.href} target="_blank" rel="noopener noreferrer" style={linkStyle}>{l.label}</a>
             ) : (
-              <a href={l.href} style={linkStyle}>{l.label}</a>
+              <Link href={l.href} style={linkStyle}>{l.label}</Link>
             )}
           </li>
         ))}

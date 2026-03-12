@@ -88,7 +88,7 @@ export function Nav() {
           <ul style={{ display: 'flex', alignItems: 'center', gap: 2, listStyle: 'none', margin: 0, padding: 0 }}>
             {navItems.map((item) => (
               <li key={item.label} style={{ position: 'relative' }} className="group">
-                <a
+                <Link
                   href={item.href}
                   style={linkBase}
                   className="hover:!text-[var(--fg)] hover:!bg-[var(--glass-bg-2)]"
@@ -102,7 +102,7 @@ export function Nav() {
                       ▾
                     </span>
                   )}
-                </a>
+                </Link>
 
                 {/* Dropdown */}
                 {item.children && (
@@ -135,7 +135,7 @@ export function Nav() {
                           )
                         }
                         return (
-                          <a
+                          <Link
                             key={ci}
                             href={child.href}
                             style={{
@@ -161,7 +161,7 @@ export function Nav() {
                               />
                             </div>
                             {child.label}
-                          </a>
+                          </Link>
                         )
                       })}
                     </div>
@@ -259,7 +259,7 @@ export function Nav() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu (généré à partir de navItems) */}
       {isMobile && menuOpen && (
         <div
           id="mobileMenu"
@@ -273,10 +273,10 @@ export function Nav() {
             boxShadow: 'var(--shadow-glass-lg)',
           }}
         >
-          {(['Mission','Solutions','Services','Réalisations','Partenaires','Communauté'] as const).map((label, i) => (
-            <a
-              key={i}
-              href={`#${['mission','solutions','services','real','partners','community'][i]}`}
+          {navItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
               onClick={() => setMenuOpen(false)}
               style={{
                 fontSize: 14, color: 'var(--fg-2)', textDecoration: 'none',
@@ -284,8 +284,8 @@ export function Nav() {
               }}
               className="hover:!text-[var(--fg)] hover:!bg-[var(--glass-bg-2)]"
             >
-              {label}
-            </a>
+              {item.label}
+            </Link>
           ))}
           <div style={{ height: 1, background: 'var(--border)', margin: '4px 0' }} />
           <a
